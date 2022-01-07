@@ -24,4 +24,4 @@ target_link_libraries(main
     ${GLUT_LIBRARY}
 )
 
-file(COPY shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# file(COPY shaders DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

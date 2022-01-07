@@ -1,6 +1,8 @@
 #include <array>
 #include <utility>
 #include <fstream>
+#include <chrono>
+#include <cmath>
 
 // Include glew before freeglut !!
 #include <GL/glew.h>
@@ -21,8 +23,12 @@ struct GlobalState
     int y_position;
 
     // Shader file names
-    const std::string vs_file{"shaders/shader.vert"};
-    const std::string fs_file{"shaders/shader.frag"};
+    const std::string vs_file{"../shaders/shader.vert"};
+    const std::string fs_file{"../shaders/shader.frag"};
+
+    // shader input params
+    //GLint u_scale_location{-1};
+    GLint u_time_location{-1};
 
     std::pair<float, float> toClipSpace(int x, int y) const
     {
@@ -134,6 +140,20 @@ static void compileShaders()
         exit(1);
     }
 
+    // GLOBALS.u_scale_location = glGetUniformLocation(shader_program_id, "u_scale");
+    // if (GLOBALS.u_scale_location == -1)
+    // {
+    //     spdlog::error("Failed to get the location of 'u_scale' for the vertex shader.");
+    //     exit(1);
+    // }
+
+    GLOBALS.u_time_location = glGetUniformLocation(shader_program_id, "u_time");
+    if (GLOBALS.u_time_location == -1)
+    {
+        spdlog::error("Failed to get the location of 'u_time' for the vertex shader.");
+        exit(1);
+    }
+
     glValidateProgram(shader_program_id);
     glGetProgramiv(shader_program_id, GL_VALIDATE_STATUS, &success);
     if (!success)
@@ -148,6 +168,8 @@ static void compileShaders()
 
 static void render()
 {
+    static auto t_prev = std::chrono::high_resolution_clock::now();
+
     // update background color
     static GLclampf c = 0.0;
     glClearColor(0.0, 0.0, c, 1.0);
@@ -156,6 +178,11 @@ static void render()
     c += (1.0 / 256.0);
     if (c >= 1)
         c = 0.0;
+
+    auto t_now = std::chrono::high_resolution_clock::now();
+    float t = (std::chrono::duration<float>(t_now - t_prev)).count();
+    // glUniform1f(GLOBALS.u_scale_location, scale);
+    glUniform1f(GLOBALS.u_time_location, t);
 
     // draw vertex buffer data
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -170,6 +197,8 @@ static void render()
     glDisableVertexAttribArray(0);
 
     glutSwapBuffers();
+
+    glutPostRedisplay();
 }
 
 int main(int argc, char **argv)
