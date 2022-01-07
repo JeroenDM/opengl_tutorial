@@ -3,6 +3,8 @@
 #include <string>
 #include <fstream>
 
+#include "spdlog/spdlog.h"
+
 bool readFile(const std::string filename, std::string &file_content)
 {
     std::ifstream file(filename);
@@ -18,6 +20,6 @@ bool readFile(const std::string filename, std::string &file_content)
         file.close();
         return true;
     }
-    std::cout << "Failed reading file " << filename << "\n";
+    spdlog::error("Failed reading file {}\n", filename);
     return false;
 }

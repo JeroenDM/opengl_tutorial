@@ -1,4 +1,3 @@
-#include <iostream>
 #include <array>
 #include <utility>
 #include <fstream>
@@ -7,7 +6,10 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
+#include "spdlog/spdlog.h"
+
 #include "util/vector.h"
+#include "util/file_io.h"
 
 struct GlobalState
 {
@@ -77,7 +79,7 @@ void processMouseInput(int key, int state, int x, int y)
     if (key == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         auto [xc, yc] = GLOBALS.toClipSpace(x, y);
-        std::cout << "Mouse pressed at " << xc << ", " << yc << "\n";
+        spdlog::debug("Left mouse button pressed at {} {}", xc, yc);
     }
 }
 
@@ -85,7 +87,7 @@ static void windowIsResized(int w, int h)
 {
     GLOBALS.width = w;
     GLOBALS.height = h;
-    std::cout << "window resized to " << w << ", " << h << "\n";
+    spdlog::debug("window resized to {} {}", w, h);
 }
 
 static void updateMouseCoordinates(int x, int y)
@@ -100,7 +102,7 @@ static void compileShaders()
 
     if (shader_program_id == 0)
     {
-        std::cout << "Error creating shader program.\n";
+        spdlog::error("Error creating shader program.");
         exit(1);
     }
 
@@ -114,8 +116,8 @@ static void compileShaders()
         exit(1);
     }
 
-    std::cout << vertex_shader_source << "\n";
-    std::cout << fragment_shader_source << "\n";
+    spdlog::debug("Vertex shader:\n{}", vertex_shader_source);
+    spdlog::debug("Fragment shader:\n{}", fragment_shader_source);
 }
 
 static void render()
@@ -147,13 +149,15 @@ static void render()
 int main(int argc, char **argv)
 {
 
+    spdlog::set_level(spdlog::level::debug); 
+
     int window = setupWindow(&argc, argv);
-    std::cout << "Window create with id: " << window << "\n";
+    spdlog::info("Window create with id: {}", window);
 
     GLenum res = glewInit();
     if (res != GLEW_OK)
     {
-        std::cout << "Failed to initialize glew.\n";
+        spdlog::error("Failed to initialize glew.");
         return 1;
     }
 
