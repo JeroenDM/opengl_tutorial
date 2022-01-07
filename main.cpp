@@ -10,6 +10,7 @@
 
 #include "util/vector.h"
 #include "util/file_io.h"
+#include "util/boilerplate.h"
 
 struct GlobalState
 {
@@ -107,17 +108,42 @@ static void compileShaders()
     }
 
     std::string vertex_shader_source, fragment_shader_source;
+
     if (!readFile(GLOBALS.vs_file, vertex_shader_source))
     {
         exit(1);
     }
+    spdlog::debug("Vertex shader:\n{}", vertex_shader_source);
+    addShader(shader_program_id, vertex_shader_source, GL_VERTEX_SHADER);
+
     if (!readFile(GLOBALS.fs_file, fragment_shader_source))
     {
         exit(1);
     }
-
-    spdlog::debug("Vertex shader:\n{}", vertex_shader_source);
     spdlog::debug("Fragment shader:\n{}", fragment_shader_source);
+    addShader(shader_program_id, fragment_shader_source, GL_FRAGMENT_SHADER);
+
+    GLint success{0};
+    GLchar info[1024]{0};
+    glLinkProgram(shader_program_id);
+    glGetProgramiv(shader_program_id, GL_LINK_STATUS, &success);
+    if (success == 0)
+    {
+        glGetProgramInfoLog(shader_program_id, 1024, NULL, info);
+        spdlog::error("Failed to link shaders, got error:\n{}", info);
+        exit(1);
+    }
+
+    glValidateProgram(shader_program_id);
+    glGetProgramiv(shader_program_id, GL_VALIDATE_STATUS, &success);
+    if (!success)
+    {
+        glGetProgramInfoLog(shader_program_id, 1024, NULL, info);
+        spdlog::error("Incompatible shader program, got error:\n{}", info);
+        exit(1);
+    }
+
+    glUseProgram(shader_program_id);
 }
 
 static void render()
@@ -149,7 +175,7 @@ static void render()
 int main(int argc, char **argv)
 {
 
-    spdlog::set_level(spdlog::level::debug); 
+    spdlog::set_level(spdlog::level::debug);
 
     int window = setupWindow(&argc, argv);
     spdlog::info("Window create with id: {}", window);
