@@ -28,7 +28,8 @@ struct GlobalState
 
     // shader input params
     //GLint u_scale_location{-1};
-    GLint u_time_location{-1};
+    GLint u_time_loc{-1};
+    GLint u_transform_loc{-1};
 
     std::pair<float, float> toClipSpace(int x, int y) const
     {
@@ -147,12 +148,20 @@ static void compileShaders()
     //     exit(1);
     // }
 
-    GLOBALS.u_time_location = glGetUniformLocation(shader_program_id, "u_time");
-    if (GLOBALS.u_time_location == -1)
+    GLOBALS.u_time_loc = glGetUniformLocation(shader_program_id, "u_time");
+    if (GLOBALS.u_time_loc == -1)
     {
         spdlog::error("Failed to get the location of 'u_time' for the vertex shader.");
         exit(1);
     }
+
+        GLOBALS.u_transform_loc = glGetUniformLocation(shader_program_id, "u_transform");
+    if (GLOBALS.u_transform_loc == -1)
+    {
+        spdlog::error("Failed to get the location of 'u_time' for the vertex shader.");
+        exit(1);
+    }
+
 
     glValidateProgram(shader_program_id);
     glGetProgramiv(shader_program_id, GL_VALIDATE_STATUS, &success);
@@ -182,7 +191,12 @@ static void render()
     auto t_now = std::chrono::high_resolution_clock::now();
     float t = (std::chrono::duration<float>(t_now - t_prev)).count();
     // glUniform1f(GLOBALS.u_scale_location, scale);
-    glUniform1f(GLOBALS.u_time_location, t);
+    glUniform1f(GLOBALS.u_time_loc, t);
+
+    static Matrix4 transform = Matrix4::Identity();
+    transform.MakeRotZ(t);
+    // GL_TRUE = row major (vs col major)
+    glUniformMatrix4fv(GLOBALS.u_transform_loc, 1, GL_TRUE, &transform.m[0]);
 
     // draw vertex buffer data
     glBindBuffer(GL_ARRAY_BUFFER, VBO);

@@ -1,3 +1,9 @@
+/**
+ * Author: HackerPoet
+ * source: https://github.com/HackerPoet/NonEuclidean
+ * License: MIT
+ * 
+ */
 #pragma once
 #include <cmath>
 #include <cfloat>
