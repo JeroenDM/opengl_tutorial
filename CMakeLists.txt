@@ -31,7 +31,7 @@ target_include_directories(${LIBNAME} PUBLIC .)
 #     ${GLEW_LIBRARIES}
 #     ${GLUT_LIBRARY}
 # )
-# message(WARN ${EUCLID_SRC})
+message(WARN ${EUCLID_SRC})
 
 add_executable(main main.cpp)
 target_link_libraries(main

@@ -6,6 +6,7 @@
 #include "euclid/core/game_header.h"
 #include "euclid/core/camera.h"
 #include "euclid/geometry/mesh.h"
+#include "euclid/util/timer.h"
 
 int setupWindow(int *argc, char **argv)
 {
@@ -17,9 +18,9 @@ int setupWindow(int *argc, char **argv)
     return glutCreateWindow("Non euclidean test.");
 }
 
-
 int main(int argc, char **argv)
 {
+    using namespace std::chrono_literals;
 
     spdlog::set_level(spdlog::level::debug);
 
