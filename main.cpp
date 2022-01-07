@@ -10,7 +10,7 @@
 
 #include "spdlog/spdlog.h"
 
-#include "util/vector.h"
+#include "euclid/util/vector.h"
 #include "util/file_io.h"
 #include "util/boilerplate.h"
 
