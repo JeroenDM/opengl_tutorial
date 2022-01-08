@@ -3,6 +3,14 @@ project(opengl_tutorial VERSION 0.0.1 LANGUAGES CXX)
 
 set (CMAKE_CXX_STANDARD 20)
 
+if (MSVC)
+    # warning level 4
+    add_compile_options(/W4)
+else()
+    # lots of warnings
+    add_compile_options(-Wall -Wextra -pedantic)
+endif()
+
 add_subdirectory(external/spdlog)
 
 find_package(spdlog)
@@ -57,6 +65,19 @@ target_link_libraries(noneuclidean
     ${GLEW_LIBRARIES}
     ${GLUT_LIBRARY}
     assimp
+)
+
+add_executable(01_empty_window
+    tutorials/01_empty_window.cpp
+    tutorials/engine.cpp
+    tutorials/color.cpp
+)
+target_link_libraries(01_empty_window
+    ${LIBNAME}
+    spdlog
+    ${OPENGL_LIBRARIES}
+    ${GLEW_LIBRARIES}
+    ${GLUT_LIBRARY}
 )
 
 
