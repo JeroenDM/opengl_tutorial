@@ -17,6 +17,7 @@ find_package(spdlog)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(GLUT REQUIRED)
+find_package(ImageMagick REQUIRED)
 
 set(ON 1)
 find_package(assimp REQUIRED)
@@ -39,7 +40,7 @@ target_include_directories(${LIBNAME} PUBLIC .)
 #     ${GLEW_LIBRARIES}
 #     ${GLUT_LIBRARY}
 # )
-message(WARN ${EUCLID_SRC})
+# message(WARN ${EUCLID_SRC})
 
 add_executable(main main.cpp)
 target_link_libraries(main

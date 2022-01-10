@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <GL/glew.h>
 
 //Windows
 static const char GH_TITLE[] = "NonEuclideanDemo";
@@ -49,6 +50,8 @@ extern Player* GH_PLAYER;
 extern const Input* GH_INPUT;
 extern int GH_REC_LEVEL;
 extern int64_t GH_FRAME;
+
+inline GLint GH_WINDOW_ID;
 
 //Functions
 template<class T>

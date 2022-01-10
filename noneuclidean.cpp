@@ -7,15 +7,24 @@
 #include "euclid/core/camera.h"
 #include "euclid/geometry/mesh.h"
 #include "euclid/util/timer.h"
+#include "euclid/engine.h"
 
-int setupWindow(int *argc, char **argv)
+// int setupWindow(int *argc, char **argv)
+// {
+//     glutInit(argc, argv);
+//     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+//     glutInitWindowSize(GH_SCREEN_WIDTH, GH_SCREEN_HEIGHT);
+//     glutInitWindowPosition(GH_SCREEN_X, GH_SCREEN_Y);
+
+//     return glutCreateWindow("Non euclidean test.");
+// }
+
+void render()
 {
-    glutInit(argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowSize(GH_SCREEN_WIDTH, GH_SCREEN_HEIGHT);
-    glutInitWindowPosition(GH_SCREEN_X, GH_SCREEN_Y);
-
-    return glutCreateWindow("Non euclidean test.");
+    // OpenGL draw calls.
+    glClear(GL_COLOR_BUFFER_BIT);
+    glutSwapBuffers();
+    glutPostRedisplay();
 }
 
 int main(int argc, char **argv)
@@ -24,8 +33,11 @@ int main(int argc, char **argv)
 
     spdlog::set_level(spdlog::level::debug);
 
-    int window = setupWindow(&argc, argv);
-    spdlog::info("Window create with id: {}", window);
+
+    Engine engine(&argc, argv);
+
+    // int window = setupWindow(&argc, argv);
+    spdlog::info("Window create with id: {}", GH_WINDOW_ID);
 
     glewExperimental = GL_TRUE;
     GLenum res = glewInit();
@@ -40,8 +52,9 @@ int main(int argc, char **argv)
     glClearColor(0.0, 0.0, 1.0, 1.0);
     glEnable(GL_CULL_FACE);
 
-    Camera camera;
-    Mesh mesh("../assets/bizon.obj");
+    // Camera camera;
+    // Mesh mesh("../assets/bizon.obj");
+    glutDisplayFunc(render);
 
     glutMainLoop();
 

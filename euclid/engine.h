@@ -16,16 +16,17 @@
 #include "euclid/util/timer.h"
 #include "euclid/core/camera.h"
 #include "euclid/object/portal.h"
+#include "euclid/sky.h"
 
 class Engine
 {
 public:
-  Engine();
+  Engine(int *argc, char **argv);
   ~Engine() = default;
 
-  // int Run();
+  int Run();
   // void Update();
-  void Render(const Camera & /* cam */, GLuint /* curFBO */, const Portal * /* skipPortal */) {}
+  void Render(const Camera & /* cam */, GLuint /* curFBO */, const Portal * /* skipPortal */);
   // void LoadScene(int ix);
 
   // LRESULT WindowProc(HWND hCurWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -37,8 +38,8 @@ public:
   };
 
 private:
-  // void CreateGLWindow();
-  // void InitGLObjects();
+  void CreateGLWindow(int *argc, char **argv);
+  void InitGLObjects();
   // void DestroyGLObjects();
   // void SetupInputs();
   // void ConfineCursor();
@@ -57,9 +58,9 @@ private:
   // Input input;
   Timer timer;
 
-  // std::vector<std::shared_ptr<Object>> vObjects;
-  // std::vector<std::shared_ptr<Portal>> vPortals;
-  // std::shared_ptr<Sky> sky;
+  std::vector<std::shared_ptr<Object>> vObjects;
+  std::vector<std::shared_ptr<Portal>> vPortals;
+  std::shared_ptr<Sky> sky;
   // std::shared_ptr<Player> player;
 
   GLint occlusionCullingSupported;

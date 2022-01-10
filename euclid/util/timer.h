@@ -7,7 +7,7 @@ public:
   ~Timer() = default;
 
   void Start() {
-    auto t1_ = std::chrono::high_resolution_clock::now();
+    t1_ = std::chrono::high_resolution_clock::now();
   }
 
   float Stop() {
