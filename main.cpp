@@ -68,7 +68,7 @@ static void createAndFillVertexBuffer()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices.data(), GL_STATIC_DRAW);
 }
 
-void updateVertexBuffer(float x_pos, float y_pos)
+static void updateVertexBuffer(float x_pos, float y_pos)
 {
     // Vector3 vertices[3];
     std::array<Vector3, 3> vertices;
@@ -121,14 +121,14 @@ static void compileShaders()
         exit(1);
     }
     spdlog::debug("Vertex shader:\n{}", vertex_shader_source);
-    addShader(shader_program_id, vertex_shader_source, GL_VERTEX_SHADER);
+    util::addShader(shader_program_id, vertex_shader_source, GL_VERTEX_SHADER);
 
     if (!readFile(GLOBALS.fs_file, fragment_shader_source))
     {
         exit(1);
     }
     spdlog::debug("Fragment shader:\n{}", fragment_shader_source);
-    addShader(shader_program_id, fragment_shader_source, GL_FRAGMENT_SHADER);
+    util::addShader(shader_program_id, fragment_shader_source, GL_FRAGMENT_SHADER);
 
     GLint success{0};
     GLchar info[1024]{0};

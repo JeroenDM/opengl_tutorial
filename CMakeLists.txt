@@ -18,6 +18,7 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(ImageMagick REQUIRED)
+find_package(glfw3 REQUIRED)
 
 set(ON 1)
 find_package(assimp REQUIRED)
@@ -79,6 +80,21 @@ target_link_libraries(01_empty_window
     ${OPENGL_LIBRARIES}
     ${GLEW_LIBRARIES}
     ${GLUT_LIBRARY}
+)
+
+add_executable(glfw_main glfw_version/main.cpp)
+target_include_directories(glfw_main PRIVATE
+    .
+    ${OPENGL_INCLUDE_DIRS}
+    ${GLFW_INCLUDE_DIRS}
+    ${GLEW_INCLUDE_DIRS}
+)
+target_link_libraries(glfw_main
+    spdlog
+    ${OPENGL_LIBRARIES}
+    ${GLEW_LIBRARIES}
+    glfw
+    ${GLFW_LIBRARIES}
 )
 
 
