@@ -1,5 +1,5 @@
 #include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <GLFW/glfw3.h>
 
 #include "spdlog/spdlog.h"
 
@@ -19,13 +19,13 @@
 //     return glutCreateWindow("Non euclidean test.");
 // }
 
-void render()
-{
-    // OpenGL draw calls.
-    glClear(GL_COLOR_BUFFER_BIT);
-    glutSwapBuffers();
-    glutPostRedisplay();
-}
+// void render()
+// {
+//     // OpenGL draw calls.
+//     glClear(GL_COLOR_BUFFER_BIT);
+//     glutSwapBuffers();
+//     glutPostRedisplay();
+// }
 
 int main(int argc, char **argv)
 {
@@ -35,17 +35,15 @@ int main(int argc, char **argv)
 
 
     Engine engine(&argc, argv);
+    engine.Run();
 
-    // int window = setupWindow(&argc, argv);
-    spdlog::info("Window create with id: {}", GH_WINDOW_ID);
-
-    glewExperimental = GL_TRUE;
-    GLenum res = glewInit();
-    if (res != GLEW_OK)
-    {
-        spdlog::error("Failed to initialize glew.");
-        return 1;
-    }
+    // glewExperimental = GL_TRUE;
+    // GLenum res = glewInit();
+    // if (res != GLEW_OK)
+    // {
+    //     spdlog::error("Failed to initialize glew.");
+    //     return 1;
+    // }
 
     spdlog::info("OpenGL version supported by this platform ({}): \n", glGetString(GL_VERSION));
 
@@ -54,9 +52,9 @@ int main(int argc, char **argv)
 
     // Camera camera;
     // Mesh mesh("../assets/bizon.obj");
-    glutDisplayFunc(render);
+    // glutDisplayFunc(render);
 
-    glutMainLoop();
+    // glutMainLoop();
 
     return 0;
 }

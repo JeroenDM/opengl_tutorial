@@ -12,6 +12,8 @@
 #include <memory>
 #include <vector>
 
+#include <GLFW/glfw3.h>
+
 #include "euclid/core/game_header.h"
 #include "euclid/util/timer.h"
 #include "euclid/core/camera.h"
@@ -49,6 +51,7 @@ private:
   // HGLRC hRC;				   // opengl context
   // HWND  hWnd;				   // window
   // HINSTANCE hInstance; // process id
+  GLFWwindow *window;
 
   // LONG iWidth;         // window width
   // LONG iHeight;        // window height

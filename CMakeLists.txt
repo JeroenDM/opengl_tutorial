@@ -35,6 +35,10 @@ set(LIBNAME euclid)
 FILE(GLOB_RECURSE EUCLID_SRC "euclid/*.cpp")
 add_library(${LIBNAME} SHARED ${EUCLID_SRC})
 target_include_directories(${LIBNAME} PUBLIC .)
+target_link_libraries(${LIBNAME}
+    glfw
+    ${GLFW_LIBRARIES}
+)
 # target_link_libraries(${LIBNAME}
 #     spdlog
 #     ${OPENGL_LIBRARIES}

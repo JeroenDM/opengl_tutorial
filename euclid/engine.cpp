@@ -1,5 +1,9 @@
 #include "euclid/engine.h"
 
+#include <cmath>
+#include <iostream>
+#include <algorithm>
+
 // #include "Physical.h"
 // #include "Level1.h"
 // #include "Level2.h"
@@ -8,13 +12,10 @@
 // #include "Level5.h"
 // #include "Level6.h"
 #include <GL/glew.h>
-#include <GL/freeglut.h>
+#include <GLFW/glfw3.h>
+#include <spdlog/spdlog.h>
 
-#include <cmath>
-#include <iostream>
-#include <algorithm>
-
-Engine* GH_ENGINE = nullptr;
+Engine *GH_ENGINE = nullptr;
 // Player* GH_PLAYER = nullptr;
 // const Input* GH_INPUT = nullptr;
 int GH_REC_LEVEL = 0;
@@ -28,14 +29,15 @@ int64_t GH_FRAME = 0;
 //   return DefWindowProc(hWnd, uMsg, wParam, lParam);
 // }
 
-Engine::Engine(int *argc, char **argv) {
+Engine::Engine(int *argc, char **argv)
+{
   GH_ENGINE = this;
   // GH_INPUT = &input;
   isFullscreen = false;
 
   // SetProcessDPIAware();
   CreateGLWindow(argc, argv);
-  // InitGLObjects();
+  InitGLObjects();
   // SetupInputs();
 
   // player.reset(new Player);
@@ -62,7 +64,8 @@ Engine::Engine(int *argc, char **argv) {
 //   DestroyWindow(hWnd);
 // }
 
-int Engine::Run() {
+int Engine::Run()
+{
   // if (!hWnd || !hDC || !hRC) {
   //   return 1;
   // }
@@ -75,58 +78,65 @@ int Engine::Run() {
   // int64_t cur_ticks = timer.GetTicks();
   // GH_FRAME = 0;
 
-  //Game loop
+  // Game loop
   // MSG msg;
-  while (true) {
-  //   if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-  //     //Handle windows messages
-  //     if (msg.message == WM_QUIT) {
-  //       break;
-  //     } else {
-  //       TranslateMessage(&msg);
-  //       DispatchMessage(&msg);
-  //     }
-  //   } else {
-  //     //Confine the cursor
-  //     ConfineCursor();
+  while (!glfwWindowShouldClose(window))
+  {
+    //   if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+    //     //Handle windows messages
+    //     if (msg.message == WM_QUIT) {
+    //       break;
+    //     } else {
+    //       TranslateMessage(&msg);
+    //       DispatchMessage(&msg);
+    //     }
+    //   } else {
+    //     //Confine the cursor
+    //     ConfineCursor();
 
-  //     if (input.key_press['1']) {
-  //       LoadScene(0);
-  //     } else if (input.key_press['2']) {
-  //       LoadScene(1);
-  //     } else if (input.key_press['3']) {
-  //       LoadScene(2);
-  //     } else if (input.key_press['4']) {
-  //       LoadScene(3);
-  //     } else if (input.key_press['5']) {
-  //       LoadScene(4);
-  //     } else if (input.key_press['6']) {
-  //       LoadScene(5);
-  //     } else if (input.key_press['7']) {
-  //       LoadScene(6);
-  //     }
+    //     if (input.key_press['1']) {
+    //       LoadScene(0);
+    //     } else if (input.key_press['2']) {
+    //       LoadScene(1);
+    //     } else if (input.key_press['3']) {
+    //       LoadScene(2);
+    //     } else if (input.key_press['4']) {
+    //       LoadScene(3);
+    //     } else if (input.key_press['5']) {
+    //       LoadScene(4);
+    //     } else if (input.key_press['6']) {
+    //       LoadScene(5);
+    //     } else if (input.key_press['7']) {
+    //       LoadScene(6);
+    //     }
 
-  //     //Used fixed time steps for updates
-  //     const int64_t new_ticks = timer.GetTicks();
-  //     for (int i = 0; cur_ticks < new_ticks && i < GH_MAX_STEPS; ++i) {
-  //       Update();
-  //       cur_ticks += ticks_per_step;
-  //       GH_FRAME += 1;
-  //       input.EndFrame();
-  //     }
-  //     cur_ticks = (cur_ticks < new_ticks ? new_ticks: cur_ticks);
+    //     //Used fixed time steps for updates
+    //     const int64_t new_ticks = timer.GetTicks();
+    //     for (int i = 0; cur_ticks < new_ticks && i < GH_MAX_STEPS; ++i) {
+    //       Update();
+    //       cur_ticks += ticks_per_step;
+    //       GH_FRAME += 1;
+    //       input.EndFrame();
+    //     }
+    //     cur_ticks = (cur_ticks < new_ticks ? new_ticks: cur_ticks);
 
-  //     //Setup camera for rendering
-  //     const float n = GH_CLAMP(NearestPortalDist() * 0.5f, GH_NEAR_MIN, GH_NEAR_MAX);
-  //     main_cam.worldView = player->WorldToCam();
-  //     main_cam.SetSize(iWidth, iHeight, n, GH_FAR);
-  //     main_cam.UseViewport();
+    //     //Setup camera for rendering
+    //     const float n = GH_CLAMP(NearestPortalDist() * 0.5f, GH_NEAR_MIN, GH_NEAR_MAX);
+    //     main_cam.worldView = player->WorldToCam();
+    //     main_cam.SetSize(iWidth, iHeight, n, GH_FAR);
+    //     main_cam.UseViewport();
 
-  //     //Render scene
-  //     GH_REC_LEVEL = GH_MAX_RECURSION;
-  //     Render(main_cam, 0, nullptr);
-  //     SwapBuffers(hDC);
-  //   }
+    //     //Render scene
+    //     GH_REC_LEVEL = GH_MAX_RECURSION;
+        Render(main_cam, 0, nullptr);
+    //     SwapBuffers(hDC);
+    //   }
+
+    /* Swap front and back buffers */
+    glfwSwapBuffers(window);
+
+    /* Poll for and process events */
+    glfwPollEvents();
   }
 
   // DestroyGLObjects();
@@ -207,44 +217,56 @@ int Engine::Run() {
 //   }
 // }
 
-void Engine::Render(const Camera& cam, GLuint curFBO, const Portal* skipPortal) {
-  //Clear buffers
-  if (GH_USE_SKY) {
+void Engine::Render(const Camera &cam, GLuint curFBO, const Portal *skipPortal)
+{
+  // Clear buffers
+  if (GH_USE_SKY)
+  {
     glClear(GL_DEPTH_BUFFER_BIT);
     sky->Draw(cam);
-  } else {
+  }
+  else
+  {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 
-  //Create queries (if applicable)
+  // Create queries (if applicable)
   GLuint queries[GH_MAX_PORTALS];
   GLuint drawTest[GH_MAX_PORTALS];
   assert(vPortals.size() <= GH_MAX_PORTALS);
-  if (occlusionCullingSupported) {
+  if (occlusionCullingSupported)
+  {
     glGenQueriesARB((GLsizei)vPortals.size(), queries);
   }
 
-  //Draw scene
-  for (size_t i = 0; i < vObjects.size(); ++i) {
+  // Draw scene
+  for (size_t i = 0; i < vObjects.size(); ++i)
+  {
     vObjects[i]->Draw(cam, curFBO);
   }
 
-  //Draw portals if possible
-  if (GH_REC_LEVEL > 0) {
-    //Draw portals
+  // Draw portals if possible
+  if (GH_REC_LEVEL > 0)
+  {
+    // Draw portals
     GH_REC_LEVEL -= 1;
-    if (occlusionCullingSupported && GH_REC_LEVEL > 0) {
+    if (occlusionCullingSupported && GH_REC_LEVEL > 0)
+    {
       glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
       glDepthMask(GL_FALSE);
-      for (size_t i = 0; i < vPortals.size(); ++i) {
-        if (vPortals[i].get() != skipPortal) {
+      for (size_t i = 0; i < vPortals.size(); ++i)
+      {
+        if (vPortals[i].get() != skipPortal)
+        {
           glBeginQueryARB(GL_SAMPLES_PASSED_ARB, queries[i]);
           vPortals[i]->DrawPink(cam);
           glEndQueryARB(GL_SAMPLES_PASSED_ARB);
         }
       }
-      for (size_t i = 0; i < vPortals.size(); ++i) {
-        if (vPortals[i].get() != skipPortal) {
+      for (size_t i = 0; i < vPortals.size(); ++i)
+      {
+        if (vPortals[i].get() != skipPortal)
+        {
           glGetQueryObjectuivARB(queries[i], GL_QUERY_RESULT_ARB, &drawTest[i]);
         }
       };
@@ -252,24 +274,29 @@ void Engine::Render(const Camera& cam, GLuint curFBO, const Portal* skipPortal) 
       glDepthMask(GL_TRUE);
       glDeleteQueriesARB((GLsizei)vPortals.size(), queries);
     }
-    for (size_t i = 0; i < vPortals.size(); ++i) {
-      if (vPortals[i].get() != skipPortal) {
-        if (occlusionCullingSupported && (GH_REC_LEVEL > 0) && (drawTest[i] == 0)) {
+    for (size_t i = 0; i < vPortals.size(); ++i)
+    {
+      if (vPortals[i].get() != skipPortal)
+      {
+        if (occlusionCullingSupported && (GH_REC_LEVEL > 0) && (drawTest[i] == 0))
+        {
           continue;
-        } else {
+        }
+        else
+        {
           vPortals[i]->Draw(cam, curFBO);
         }
       }
     }
     GH_REC_LEVEL += 1;
   }
-  
-// #if 0
-//   //Debug draw colliders
-//   for (size_t i = 0; i < vObjects.size(); ++i) {
-//     vObjects[i]->DebugDraw(cam);
-//   }
-// #endif
+
+  // #if 0
+  //   //Debug draw colliders
+  //   for (size_t i = 0; i < vObjects.size(); ++i) {
+  //     vObjects[i]->DebugDraw(cam);
+  //   }
+  // #endif
 }
 
 // LRESULT Engine::WindowProc(HWND hCurWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -330,7 +357,8 @@ void Engine::Render(const Camera& cam, GLuint curFBO, const Portal* skipPortal) 
 //   return DefWindowProc(hCurWnd, uMsg, wParam, lParam);
 // }
 
-void Engine::CreateGLWindow(int *argc, char **argv) {
+void Engine::CreateGLWindow(int *argc, char **argv)
+{
   // WNDCLASSEX wc;
   // hInstance = GetModuleHandle(NULL);
   // wc.cbSize = sizeof(WNDCLASSEX);
@@ -414,19 +442,40 @@ void Engine::CreateGLWindow(int *argc, char **argv) {
   // SetForegroundWindow(hWnd);
   // SetFocus(hWnd);
 
-    glutInit(argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowSize(GH_SCREEN_WIDTH, GH_SCREEN_HEIGHT);
-    glutInitWindowPosition(GH_SCREEN_X, GH_SCREEN_Y);
+  /* Initialize the library */
+  if (!glfwInit())
+    exit(1);
 
-    GH_WINDOW_ID =  glutCreateWindow("Non euclidean test.");
+  /* Create a windowed mode window and its OpenGL context */
+  window = glfwCreateWindow(GH_SCREEN_WIDTH, GH_SCREEN_HEIGHT, "Non euclidian", NULL, NULL);
+  if (!window)
+  {
+    glfwTerminate();
+    spdlog::error("Failed to create opengl context.");
+    exit(1);
+  }
+
+  /* Make the window's context current */
+  glfwMakeContextCurrent(window);
+
+  // glutInit(argc, argv);
+  // glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+  // glutInitWindowSize(GH_SCREEN_WIDTH, GH_SCREEN_HEIGHT);
+  // glutInitWindowPosition(GH_SCREEN_X, GH_SCREEN_Y);
+
+  // GH_WINDOW_ID = glutCreateWindow("Non euclidean test.");
 }
 
-void Engine::InitGLObjects() {
-  //Initialize extensions
-  glewInit();
+void Engine::InitGLObjects()
+{
+  // Initialize extensions
+  GLenum err = glewInit();
+  if (err != GLEW_OK)
+  {
+    spdlog::error("Failed to initialize glew.");
+  }
 
-  //Basic global variables
+  // Basic global variables
   glClearColor(0.6f, 0.9f, 1.0f, 1.0f);
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
@@ -434,10 +483,10 @@ void Engine::InitGLObjects() {
   glDepthFunc(GL_LESS);
   glDepthMask(GL_TRUE);
 
-  //Check GL functionality
+  // Check GL functionality
   glGetQueryiv(GL_SAMPLES_PASSED_ARB, GL_QUERY_COUNTER_BITS_ARB, &occlusionCullingSupported);
 
-  //Attempt to enalbe vsync (if failure then oh well)
+  // Attempt to enalbe vsync (if failure then oh well)
   // wglSwapIntervalEXT(1);
 }
 
