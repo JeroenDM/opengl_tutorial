@@ -5,7 +5,7 @@
 #include <algorithm>
 
 // #include "Physical.h"
-// #include "Level1.h"
+#include "euclid/levels/level1.h"
 // #include "Level2.h"
 // #include "Level3.h"
 // #include "Level4.h"
@@ -16,7 +16,7 @@
 #include <spdlog/spdlog.h>
 
 Engine *GH_ENGINE = nullptr;
-// Player* GH_PLAYER = nullptr;
+Player* GH_PLAYER = nullptr;
 // const Input* GH_INPUT = nullptr;
 int GH_REC_LEVEL = 0;
 int64_t GH_FRAME = 0;
@@ -40,10 +40,10 @@ Engine::Engine(int *argc, char **argv)
   InitGLObjects();
   // SetupInputs();
 
-  // player.reset(new Player);
-  // GH_PLAYER = player.get();
+  player.reset(new Player);
+  GH_PLAYER = player.get();
 
-  // vScenes.push_back(std::shared_ptr<Scene>(new Level1));
+  vScenes.push_back(std::shared_ptr<Scene>(new Level1));
   // vScenes.push_back(std::shared_ptr<Scene>(new Level2(3)));
   // vScenes.push_back(std::shared_ptr<Scene>(new Level2(6)));
   // vScenes.push_back(std::shared_ptr<Scene>(new Level3));
@@ -51,7 +51,7 @@ Engine::Engine(int *argc, char **argv)
   // vScenes.push_back(std::shared_ptr<Scene>(new Level5));
   // vScenes.push_back(std::shared_ptr<Scene>(new Level6));
 
-  // LoadScene(0);
+  LoadScene(0);
 
   // sky.reset(new Sky);
 }
@@ -113,7 +113,7 @@ int Engine::Run()
     //     //Used fixed time steps for updates
     //     const int64_t new_ticks = timer.GetTicks();
     //     for (int i = 0; cur_ticks < new_ticks && i < GH_MAX_STEPS; ++i) {
-    //       Update();
+          Update();
     //       cur_ticks += ticks_per_step;
     //       GH_FRAME += 1;
     //       input.EndFrame();
@@ -122,7 +122,7 @@ int Engine::Run()
 
     //     //Setup camera for rendering
     //     const float n = GH_CLAMP(NearestPortalDist() * 0.5f, GH_NEAR_MIN, GH_NEAR_MAX);
-    //     main_cam.worldView = player->WorldToCam();
+        main_cam.worldView = player->WorldToCam();
     //     main_cam.SetSize(iWidth, iHeight, n, GH_FAR);
     //     main_cam.UseViewport();
 
@@ -143,79 +143,79 @@ int Engine::Run()
   return 0;
 }
 
-// void Engine::LoadScene(int ix) {
-//   //Clear out old scene
-//   if (curScene) { curScene->Unload(); }
-//   vObjects.clear();
-//   vPortals.clear();
-//   player->Reset();
+void Engine::LoadScene(int ix) {
+  //Clear out old scene
+  if (curScene) { curScene->Unload(); }
+  vObjects.clear();
+  vPortals.clear();
+  player->Reset();
 
-//   //Create new scene
-//   curScene = vScenes[ix];
-//   curScene->Load(vObjects, vPortals, *player);
-//   vObjects.push_back(player);
-// }
+  //Create new scene
+  curScene = vScenes.at(ix);
+  curScene->Load(vObjects, vPortals, *player);
+  vObjects.push_back(player);
+}
 
-// void Engine::Update() {
-//   //Update
-//   for (size_t i = 0; i < vObjects.size(); ++i) {
-//     assert(vObjects[i].get());
-//     vObjects[i]->Update();
-//   }
+void Engine::Update() {
+  //Update
+  for (size_t i = 0; i < vObjects.size(); ++i) {
+    assert(vObjects[i].get());
+    vObjects[i]->Update();
+  }
 
-//   //Collisions
-//   //For each physics object
-//   for (size_t i = 0; i < vObjects.size(); ++i) {
-//     Physical* physical = vObjects[i]->AsPhysical();
-//     if (!physical) { continue; }
-//     Matrix4 worldToLocal = physical->WorldToLocal();
+  //Collisions
+  //For each physics object
+  for (size_t i = 0; i < vObjects.size(); ++i) {
+    Physical* physical = vObjects[i]->AsPhysical();
+    if (!physical) { continue; }
+    Matrix4 worldToLocal = physical->WorldToLocal();
 
-//     //For each object to collide with
-//     for (size_t j = 0; j < vObjects.size(); ++j) {
-//       if (i == j) { continue; }
-//       Object& obj = *vObjects[j];
-//       if (!obj.mesh) { continue; }
+    //For each object to collide with
+    for (size_t j = 0; j < vObjects.size(); ++j) {
+      if (i == j) { continue; }
+      Object& obj = *vObjects[j];
+      if (!obj.mesh) { continue; }
 
-//       //For each hit sphere
-//       for (size_t s = 0; s < physical->hitSpheres.size(); ++s) {
-//         //Brings point from collider's local coordinates to hits's local coordinates.
-//         const Sphere& sphere = physical->hitSpheres[s];
-//         Matrix4 worldToUnit = sphere.LocalToUnit() * worldToLocal;
-//         Matrix4 localToUnit = worldToUnit * obj.LocalToWorld();
-//         Matrix4 unitToWorld = worldToUnit.Inverse();
+      //For each hit sphere
+      for (size_t s = 0; s < physical->hitSpheres.size(); ++s) {
+        //Brings point from collider's local coordinates to hits's local coordinates.
+        const Sphere& sphere = physical->hitSpheres[s];
+        Matrix4 worldToUnit = sphere.LocalToUnit() * worldToLocal;
+        Matrix4 localToUnit = worldToUnit * obj.LocalToWorld();
+        Matrix4 unitToWorld = worldToUnit.Inverse();
 
-//         //For each collider
-//         for (size_t c = 0; c < obj.mesh->colliders.size(); ++c) {
-//           Vector3 push;
-//           const Collider& collider = obj.mesh->colliders[c];
-//           if (collider.Collide(localToUnit, push)) {
-//             //If push is too small, just ignore
-//             push = unitToWorld.MulDirection(push);
-//             vObjects[j]->OnHit(*physical, push);
-//             physical->OnCollide(*vObjects[j], push);
+        //For each collider
+        for (size_t c = 0; c < obj.mesh->colliders.size(); ++c) {
+          Vector3 push;
+          const Collider& collider = obj.mesh->colliders[c];
+          if (collider.Collide(localToUnit, push)) {
+            //If push is too small, just ignore
+            push = unitToWorld.MulDirection(push);
+            vObjects[j]->OnHit(*physical, push);
+            physical->OnCollide(*vObjects[j], push);
 
-//             worldToLocal = physical->WorldToLocal();
-//             worldToUnit = sphere.LocalToUnit() * worldToLocal;
-//             localToUnit = worldToUnit * obj.LocalToWorld();
-//             unitToWorld = worldToUnit.Inverse();
-//           }
-//         }
-//       }
-//     }
-//   }
+            worldToLocal = physical->WorldToLocal();
+            worldToUnit = sphere.LocalToUnit() * worldToLocal;
+            localToUnit = worldToUnit * obj.LocalToWorld();
+            unitToWorld = worldToUnit.Inverse();
+          }
+        }
+      }
+    }
+  }
 
-//   //Portals
-//   for (size_t i = 0; i < vObjects.size(); ++i) {
-//     Physical* physical = vObjects[i]->AsPhysical();
-//     if (physical) {
-//       for (size_t j = 0; j < vPortals.size(); ++j) {
-//         if (physical->TryPortal(*vPortals[j])) {
-//           break;
-//         }
-//       }
-//     }
-//   }
-// }
+  //Portals
+  for (size_t i = 0; i < vObjects.size(); ++i) {
+    Physical* physical = vObjects[i]->AsPhysical();
+    if (physical) {
+      for (size_t j = 0; j < vPortals.size(); ++j) {
+        if (physical->TryPortal(*vPortals[j])) {
+          break;
+        }
+      }
+    }
+  }
+}
 
 void Engine::Render(const Camera &cam, GLuint curFBO, const Portal *skipPortal)
 {

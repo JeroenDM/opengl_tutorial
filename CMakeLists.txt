@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.16.0)
 project(opengl_tutorial VERSION 0.0.1 LANGUAGES CXX)
 
+
+add_subdirectory(external/spdlog)
+
 set (CMAKE_CXX_STANDARD 20)
 
 if (MSVC)
@@ -10,8 +13,6 @@ else()
     # lots of warnings
     add_compile_options(-Wall -Wextra -pedantic)
 endif()
-
-add_subdirectory(external/spdlog)
 
 find_package(spdlog)
 find_package(OpenGL REQUIRED)
@@ -24,6 +25,7 @@ set(ON 1)
 find_package(assimp REQUIRED)
 
 include_directories(
+    external/spdlog/include
     ${OPENGL_INCLUDE_DIRS}    
     ${GLEW_INCLUDE_DIRS}
     ${GLUT_INCLUDE_DIRS}

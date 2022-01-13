@@ -9,23 +9,6 @@
 #include "euclid/util/timer.h"
 #include "euclid/engine.h"
 
-// int setupWindow(int *argc, char **argv)
-// {
-//     glutInit(argc, argv);
-//     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-//     glutInitWindowSize(GH_SCREEN_WIDTH, GH_SCREEN_HEIGHT);
-//     glutInitWindowPosition(GH_SCREEN_X, GH_SCREEN_Y);
-
-//     return glutCreateWindow("Non euclidean test.");
-// }
-
-// void render()
-// {
-//     // OpenGL draw calls.
-//     glClear(GL_COLOR_BUFFER_BIT);
-//     glutSwapBuffers();
-//     glutPostRedisplay();
-// }
 
 int main(int argc, char **argv)
 {

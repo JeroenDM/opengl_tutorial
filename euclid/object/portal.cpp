@@ -8,7 +8,7 @@
 
 
 Portal::Portal() : front(this), back(this) {
-  mesh = AquireMesh("double_quad.obj");
+  mesh = AquireMesh("../assets/double_quad.obj");
   shader = AquireShader("portal");
   errShader = AquireShader("pink");
 }
